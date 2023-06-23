@@ -1,14 +1,14 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectFilter } from '../../redux/selectors';
-import { setFilterValue } from 'redux/filterSlice';
+import { filtration } from 'redux/filterSlice';
 import css from '../GlobalStyles.module.css';
 
 const Filter = () => {
   const filter = useSelector(selectFilter);
   const dispatch = useDispatch();
   const changeFilter = e => {
-    dispatch(setFilterValue(e.target.value.trim()));
+    dispatch(filtration(e.target.value.trim()));
   };
 
   return (

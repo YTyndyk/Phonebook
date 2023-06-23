@@ -1,63 +1,85 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchContacts, addContact, deleteContact } from './operations';
+import {
+  fetchContacts,
+  deleteContact,
+  addContact,
+  redactContatc,
+} from './operations';
 
-const initialState = {
-  items: [],
-  isLoading: false,
-  error: null,
-};
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { logOut } from 'redux/authorization/authOperations';
 
 const handlePending = state => {
-  return {
-    ...state,
-    isLoading: true,
-  };
+  state.isLoading = true;
+  state.error = null;
 };
 
 const handleRejected = (state, action) => {
-  return {
-    ...state,
-    isLoading: false,
-    error: action.payload,
-  };
+  state.isLoading = false;
+  state.error = action.payload;
+
+  toast.error(
+    `${action.payload}` === 'Network Error'
+      ? `${action.payload}`
+      : 'Something went wrong.Check your data and try again'
+  );
 };
 
-const handleFetchContactsSuccess = (state, action) => {
-  return { ...state, isLoading: false, error: null, items: action.payload };
-};
-
-const handleAddContactSuccess = (state, action) => {
-  return {
-    ...state,
-    isLoading: false,
-    error: null,
-    items: [action.payload, ...state.items],
-  };
-};
-
-const handleDeleteContactSuccess = (state, action) => {
-  return {
-    ...state,
-    isLoading: false,
-    error: null,
-    items: state.items.filter(item => item.id !== action.payload.id),
-  };
-};
-
-const contactsSlice = createSlice({
+const contactSlise = createSlice({
   name: 'contacts',
-  initialState,
-  extraReducers: {
-    [fetchContacts.pending]: handlePending,
-    [addContact.pending]: handlePending,
-    [deleteContact.pending]: handlePending,
-    [fetchContacts.rejected]: handleRejected,
-    [addContact.rejected]: handleRejected,
-    [deleteContact.rejected]: handleRejected,
-    [fetchContacts.fulfilled]: handleFetchContactsSuccess,
-    [addContact.fulfilled]: handleAddContactSuccess,
-    [deleteContact.fulfilled]: handleDeleteContactSuccess,
+  initialState: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
+
+  extraReducers: builder => {
+    builder
+      .addCase(fetchContacts.pending, handlePending)
+      .addCase(fetchContacts.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.error = null;
+        state.items = action.payload;
+      })
+      .addCase(fetchContacts.rejected, handleRejected)
+
+      .addCase(deleteContact.pending, handlePending)
+      .addCase(deleteContact.fulfilled, (state, action) => {
+        const index = state.items.findIndex(
+          task => task.id === action.payload.id
+        );
+        state.items.splice(index, 1);
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(deleteContact.rejected, handleRejected)
+
+      .addCase(addContact.pending, handlePending)
+      .addCase(addContact.fulfilled, (state, action) => {
+        state.items.unshift(action.payload);
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(addContact.rejected, handleRejected)
+
+      .addCase(redactContatc.pending, handlePending)
+      .addCase(redactContatc.fulfilled, (state, action) => {
+        const index = state.items.findIndex(
+          task => task.id === action.payload.id
+        );
+        state.items.splice(index, 1);
+        state.items.unshift(action.payload);
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(redactContatc.rejected, handleRejected)
+      .addCase(logOut.fulfilled, state => {
+        state.items = [];
+        state.error = null;
+        state.isLoading = false;
+      });
   },
 });
 
-export const contactsReducer = contactsSlice.reducer;
+export const contactsReduser = contactSlise.reducer;
