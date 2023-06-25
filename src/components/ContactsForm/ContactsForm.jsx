@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'Redux/Contacts/operations';
+import { addContact } from 'redux/Contacts/operations';
 import { useState } from 'react';
 import {
   FormWrap,
@@ -9,7 +9,7 @@ import {
   InputForm,
   AddModal,
   OpenAddModal,
-} from './ContactForm.styled'; // стилі
+} from './ContactsForm.styled'; // стилі
 import { PlusCircleOutlined } from '@ant-design/icons'; // іконки
 
 export const ContactForm = () => {

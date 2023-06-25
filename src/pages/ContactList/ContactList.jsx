@@ -24,7 +24,7 @@ import {
 
 import { useEffect, useState } from 'react';
 import { Filter } from 'components/Filter/Filter';
-import { ContactForm } from 'components/ContactForm/ContactForm';
+import { ContactForm } from 'components/ContactsForm/ContactsForm';
 import { Button, Popconfirm } from 'antd'; // для кнопки видалення
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'; // для іконок
 
