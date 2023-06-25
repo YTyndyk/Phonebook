@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { register, loginization, logOut, refreshUser } from './authOperations';
+import { register, loginization, logOut, refreshUser } from './operations';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 

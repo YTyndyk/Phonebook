@@ -8,7 +8,7 @@ import {
 
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { logOut } from 'redux/authorization/authOperations';
+import { logOut } from 'redux/Authorization/operations';
 
 const handlePending = state => {
   state.isLoading = true;

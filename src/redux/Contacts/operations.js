@@ -9,20 +9,8 @@ export const fetchContacts = createAsyncThunk(
     try {
       const response = await axios.get('/contacts');
       return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-export const addContact = createAsyncThunk(
-  'contacts/addContact',
-  async (subscriber, { rejectWithValue }) => {
-    try {
-      const response = await axios.post('/contacts', subscriber);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
+    } catch (e) {
+      return rejectWithValue(e.message);
     }
   }
 );
@@ -33,11 +21,24 @@ export const deleteContact = createAsyncThunk(
     try {
       const response = await axios.delete(`/contacts/${id}`);
       return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
+    } catch (e) {
+      return rejectWithValue(e.message);
     }
   }
 );
+
+export const addContact = createAsyncThunk(
+  'contacts/addContact',
+  async (subscriber, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`/contacts`, subscriber);
+      return response.data;
+    } catch (e) {
+      return rejectWithValue(e.message);
+    }
+  }
+);
+
 export const redactContatc = createAsyncThunk(
   'contacts/redactContatc',
   async (data, { rejectWithValue }) => {
@@ -47,8 +48,8 @@ export const redactContatc = createAsyncThunk(
         number: data.number,
       });
       return response.data;
-    } catch (error) {
-      return rejectWithValue(error.message);
+    } catch (e) {
+      return rejectWithValue(e.message);
     }
   }
 );

@@ -1,32 +1,22 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectFilter } from '../../redux/selectors';
-import { filtration } from 'redux/filterSlice';
-import css from '../GlobalStyles.module.css';
+import { WrapperFiler, FilterInput, FilterP } from './Filter.styled';
+import { useDispatch, useSelector } from 'react-redux';
+import { filtration } from 'redux/Contacts/filterSlice';
+import { SearchOutlined } from '@ant-design/icons';
 
-const Filter = () => {
-  const filter = useSelector(selectFilter);
+export const Filter = () => {
   const dispatch = useDispatch();
-  const changeFilter = e => {
-    dispatch(filtration(e.target.value.trim()));
-  };
+  const filter = useSelector(state => state.filter); // масив контактів
 
   return (
-    <label htmlFor="" className={css.labelFilter}>
-      Find contacts by name
-      <input
-        className={css.input}
+    <WrapperFiler>
+      <FilterP>Find contacts by name</FilterP>
+
+      <FilterInput
+        prefix={<SearchOutlined />} // іконка
         type="text"
-        name="filter"
-        pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-        title="Find contacts by name"
-        placeholder="search"
-        required
         value={filter}
-        onChange={changeFilter}
+        onChange={e => dispatch(filtration(e.target.value))} // фільтруємо контакти
       />
-    </label>
+    </WrapperFiler>
   );
 };
-
-export default Filter;

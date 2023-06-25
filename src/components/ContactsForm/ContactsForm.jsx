@@ -1,67 +1,136 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { addContact } from 'redux/operations';
-import { selectContacts } from 'redux/selectors';
-import { nanoid } from 'nanoid';
-import { toast } from 'react-toastify';
-import css from '../GlobalStyles.module.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'Redux/Contacts/operations';
+import { useState } from 'react';
+import {
+  FormWrap,
+  AddModalBtn,
+  UserIcon,
+  PhoneIcon,
+  InputForm,
+  AddModal,
+  OpenAddModal,
+} from './ContactForm.styled'; // стилі
+import { PlusCircleOutlined } from '@ant-design/icons'; // іконки
 
-const Form = () => {
-  const contacts = useSelector(selectContacts);
+export const ContactForm = () => {
+  const [open, setOpen] = useState(false); // стейт для відкриття модалки
+  const [form] = FormWrap.useForm();
+  const currentContacts = useSelector(state => state.contacts.items); // масив контактів
+  const loader = useSelector(state => state.contacts.isLoading);
   const dispatch = useDispatch();
 
-  const handleSubmit = event => {
-    event.preventDefault();
+  const showModal = () => {
+    form.resetFields(); // очищаємо форму
+    setOpen(true); // відкриваємо модалку
+  };
 
-    const contact = {
-      id: nanoid(),
-      name: event.currentTarget.elements.name.value,
-      number: event.currentTarget.elements.number.value,
+  const submit = value => {
+    // форматуємо номер телефону
+    const formatTel = () => {
+      const number = value.number;
+      const phoneLength = number.length;
+
+      // перевіряємо чи номер телефону відповідає формату
+      if (phoneLength < 7) {
+        return `(${number.slice(0, 3)}) ${number.slice(3)}`; // якщо менше 7 то виводимо тільки перші 3 цифри
+      }
+
+      // якщо більше 7 то виводимо 3 цифри, потім 3 і потім 4
+      return `(${number.slice(0, 3)}) ${number.slice(3, 6)}-${number.slice(
+        6,
+        10
+      )}`;
     };
 
-    // Перевірка на дублікати
-    const isExist = contacts.find(
-      ({ name }) => name.toLowerCase() === contact.name.toLowerCase()
-    );
+    const newContact = { name: value.name, number: formatTel() }; // створюємо новий контакт
+    const newContactName = newContact.name.toLowerCase();
 
-    // Якщо контакт вже існує, то виводимо повідомлення
-    if (isExist) {
-      return toast.warn(`${contact.name} is already in contacts.`);
+    // перевіряємо чи такий контакт вже є в списку
+    if (
+      currentContacts.find(
+        contact => contact.name.toLowerCase() === newContactName
+      )
+    ) {
+      alert(`${newContact.name} is already in contact`); // якщо є то виводимо повідомлення
+    } else {
+      dispatch(addContact(newContact)); // якщо немає то додаємо контакт
+
+      // якщо контакт додано то очищаємо форму і закриваємо модалку
+      if (!loader) {
+        form.resetFields();
+        setOpen(false);
+      }
     }
-
-    dispatch(addContact(contact));
-    event.currentTarget.reset();
   };
 
   return (
-    <form onSubmit={handleSubmit} className={css.form}>
-      <label htmlFor={nanoid()} className={css.label}>
-        Name
-        <input
-          className={css.input}
-          type="text"
-          name="name"
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
-          id={nanoid()}
-        />
-      </label>
-      <label htmlFor={nanoid()} className={css.label}>
-        Number
-        <input
-          className={css.input}
-          type="tel"
-          name="number"
-          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          required
-          id={nanoid()}
-        />
-      </label>
-      <button type="submit" className={css.buttonAdd}>
+    <>
+      <OpenAddModal
+        type="primary"
+        onClick={showModal}
+        title="add new contact"
+        size={'large'} // розмір кнопки
+      >
+        <PlusCircleOutlined />
         Add contact
-      </button>
-    </form>
+      </OpenAddModal>
+
+      <AddModal
+        footer={null}
+        title="Add new contact"
+        open={open}
+        onCancel={() => setOpen(false)}
+      >
+        <FormWrap
+          form={form}
+          name="normal_login"
+          initialValues={{
+            remember: true,
+          }}
+          onFinish={submit}
+        >
+          <FormWrap.Item
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: 'Please input Name!',
+                type: 'text',
+              },
+            ]}
+          >
+            <InputForm
+              prefix={<UserIcon />}
+              placeholder="Name"
+              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+            />
+          </FormWrap.Item>
+
+          <FormWrap.Item
+            name="number"
+            rules={[
+              {
+                required: true,
+                message: 'Please input Number!',
+                type: 'phone',
+              },
+            ]}
+          >
+            <InputForm
+              prefix={<PhoneIcon />}
+              type=""
+              placeholder="Number"
+              pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+            />
+          </FormWrap.Item>
+
+          <FormWrap.Item>
+            <AddModalBtn type="primary" htmlType="submit">
+              Create contact
+            </AddModalBtn>
+          </FormWrap.Item>
+        </FormWrap>
+      </AddModal>
+    </>
   );
 };
-export default Form;
