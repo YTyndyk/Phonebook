@@ -12,7 +12,7 @@ export const Filter = () => {
       <FilterP>Find contacts by name</FilterP>
 
       <FilterInput
-        prefix={<SearchOutlined />} // іконка
+        prefix={<SearchOutlined />}
         type="text"
         value={filter}
         onChange={e => dispatch(filtration(e.target.value))} // фільтруємо контакти

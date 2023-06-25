@@ -12,7 +12,7 @@ import {
   Spiner,
   Title,
   Container,
-} from './ContactList.styled'; // для стилів
+} from './ContactList.styled';
 
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -20,7 +20,7 @@ import {
   deleteContact,
   redactContatc,
   fetchContacts,
-} from 'redux/Contacts/operations'; // для операцій
+} from 'redux/Contacts/operations';
 
 import { useEffect, useState } from 'react';
 import { Filter } from 'components/Filter/Filter';
@@ -36,8 +36,8 @@ export default function Contactlist() {
   const dispatch = useDispatch();
 
   const handleOk = () => {
-    setIsModalOpen(false); // закриваємо модалку
-    dispatch(redactContatc({ id: subId, name: subName, number: subNumber })); // редагуємо контакт
+    setIsModalOpen(false);
+    dispatch(redactContatc({ id: subId, name: subName, number: subNumber }));
   };
 
   const showModal = (name, number, id) => {
@@ -48,7 +48,7 @@ export default function Contactlist() {
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false); // закриваємо модалку
+    setIsModalOpen(false);
   };
 
   useEffect(() => {
@@ -57,9 +57,8 @@ export default function Contactlist() {
 
   const { isLoading } = useSelector(state => state.contacts);
   const contacts = useSelector(state => state.contacts.items);
-  const filterData = useSelector(state => state.filter).toLowerCase(); // для фільтрації
+  const filterData = useSelector(state => state.filter).toLowerCase();
 
-  // фільтруємо контакти по введеному значенню
   const visibleContacts = contacts.filter(subscriber =>
     subscriber.name.toLowerCase().includes(filterData)
   );
@@ -91,7 +90,7 @@ export default function Contactlist() {
               {/* для кнопок */}
               <ButtonRedact
                 onClick={() => showModal(name, number, id)}
-                title="Edit contatc"
+                title="Edit contact"
               >
                 <EditOutlined />
                 Edit

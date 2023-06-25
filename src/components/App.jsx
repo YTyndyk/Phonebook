@@ -54,11 +54,7 @@ export const App = () => {
           <Route path="*" element={<Navigate to="/" />} />
         </Route>
       </Routes>
-
-      {/* для вспливаючих повідомлень */}
       <ToastContainer />
-
-      {/* для глобальних стилів */}
       <GlobalStyle />
     </>
   ) : (
