@@ -3,7 +3,6 @@ import { register, loginization, logOut, refreshUser } from './operations';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// це для того щоб виводити помилки в тостах
 const handlePending = state => {
   state.isLoading = true;
   state.error = null;

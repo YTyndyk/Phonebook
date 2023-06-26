@@ -9,7 +9,7 @@ import {
   InputForm,
   AddModal,
   OpenAddModal,
-} from './ContactsForm.styled'; // стилі
+} from './ContactsForm.styled';
 import { PlusCircleOutlined } from '@ant-design/icons'; // іконки
 
 export const ContactForm = () => {
